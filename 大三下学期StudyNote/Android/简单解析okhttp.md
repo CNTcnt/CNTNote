@@ -587,7 +587,7 @@
 
   ~~~java
   synchronized void enqueue(AsyncCall call) {
-      if (runningAsyncCalls.size() < maxRequests/*64*/ && runningCallsForHost(call) < maxRequestsPerHost/*5*/) {//如果正在运行的异步任务数小于最大数量且此时的请求同一个服务器的同一个端口连接数低于5个（可能是5个长连接），就直接加进正在运行的异步任务队列，然后直接丢进线程池里执行即可
+      if (runningAsyncCalls.size() < maxRequests/*64*/ && runningCallsForHost(call) < maxRequestsPerHost/*5*/) {//为了避免太多请求同时执行,如果正在运行的异步任务数小于最大数量且此时的请求同一个服务器连接数低于5个（对于每一个主机host（服务器），同时请求数目不能超过maxRequestsPerHost），就直接加进正在运行的异步任务队列，然后直接丢进线程池里执行即可
         runningAsyncCalls.add(call);
         executorService().execute(call);
       } else {//否则就加进准备异步队列等待

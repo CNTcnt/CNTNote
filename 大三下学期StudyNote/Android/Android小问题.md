@@ -1,6 +1,6 @@
 [TOC]
 
-# Android面试题
+# Android问题
 
 ## 四大组件问题
 
@@ -81,6 +81,4 @@
   * 这里利用的 EventBus 的粘性事件(Sticky Event)来实现，EventBus 内部维护了一个 Map 对象 `stickyEvents`，用于缓存粘性事件。
 
   * 粘性事件使用 `postSticky()` 方法发送，它会将事件缓存到 `stickyEvents` 这个 Map 对象中，以待下次注册时，将这个事件取出，抛给注册的组件。以此来达到一个粘性的滞后事件发送和接收。
-
-
 
