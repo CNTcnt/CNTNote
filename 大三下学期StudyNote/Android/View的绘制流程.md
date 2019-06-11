@@ -404,7 +404,7 @@
   //measureChildWithMargins 就是用来测量某个子 View 的，定义在 ViewGroup 中，我们来分析是怎样测量的，具体看注释：
   protected void measureChildWithMargins(View child, int parentWidthMeasureSpec, int widthUsed, int parentHeightMeasureSpec, int heightUsed) { 
   
-  	// 子View的LayoutParams，你在xml的layout_width和layout_height 和一切 layout_***的值最后都会封装到这个个LayoutParams。先拿到这个 layoutParams 
+  	// 子View的LayoutParams，你在xml的layout_width和layout_height 和一切 layout_***的值最后都会封装到这个个LayoutParams。先拿到 子View 的 layoutParams 
   	final MarginLayoutParams lp = (MarginLayoutParams) child.getLayoutParams();   
   
   	//根据父View的测量规格和父View自己的Padding，还有子View的Margin和已经用掉的空间大小（widthUsed），再结合 子View的 lp.width 就能算出子View的 MeasureSpec,具体计算过程看getChildMeasureSpec方法。
@@ -436,7 +436,7 @@
       int resultSize = 0;    //初始化值，最后通过这个两个值生成子View的MeasureSpec
       int resultMode = 0;    //初始化值，最后通过这个两个值生成子View的MeasureSpec
     
-      switch (specMode) {  
+      switch (specMode) {  //在 父View 的限制之下 子View 的测量
       // Parent has imposed an exact size on us，父View 的 规格 基础下来 测量子View
       case MeasureSpec.EXACTLY:   
           //1.1、子View的width或height是个精确值 (an exactly size)  
@@ -509,7 +509,7 @@
           }  
           break;  
       }  
-      //根据上面逻辑条件获取的mode和size构建MeasureSpec对象。  
+      //根据上面逻辑条件获取的mode和size构建MeasureSpec对象。此时 子VIew 的MeasureSpec已经得出  
       return MeasureSpec.makeMeasureSpec(resultSize, resultMode);  
   }   
   ~~~
@@ -808,4 +808,4 @@
 
 ### 小结
 
-* View 的绘制流程到这里就结束了。其实就是测量完后布局，布局后绘制的过程。整理完之后果然温故而知新
+* View 的绘制流程到这里就结束了。View 的绘制其实是根据一个固定的模式去绘制的，就是测量完后布局，布局后绘制的过程。
