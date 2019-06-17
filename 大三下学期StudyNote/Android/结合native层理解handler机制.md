@@ -33,11 +33,12 @@
               }
   			//这个方法用来干什么的，看名字是一个native方法，应该是阻塞在这里了，第一个参数就是我们刚才不知道的那个参数，那这个参数是什么呢？有什么功能呢？
               nativePollOnce(ptr, nextPollTimeoutMillis);
+              //第二个参数是不再阻塞后继续执行拿出一个message，然后判断是否需要延迟执行，需要就计算出时间，把时间设置给 nextPollTimeoutMillis ，然后不处理这个消息，然后一次循环结束，下一次循环会调用上面的 nativePollOnce(ptr, nextPollTimeoutMillis);这个方法就会按我们设置的使用了Native的方法对这个线程精确时间的唤醒。
   
         ...
           }
-  ~~~
-
+~~~
+  
 * ~~~java
   //原来是在构造函数中构造的
   MessageQueue(boolean quitAllowed) {
@@ -232,7 +233,7 @@
 * 发消息,发消息的工作肯定是由 handler 来完成的啊
 
   ~~~java
-  //经过多层调用我们就会到达这里
+  //经过多层调用我们就会到达这里，
   public boolean sendMessageAtTime(Message msg, long uptimeMillis)
   	{
   		boolean sent = false;
@@ -251,41 +252,41 @@
   ~~~
 
   ~~~java
+  //把消息放进消息队列里的时候会按设置的延迟时间顺序放入
   final boolean enqueueMessage(Message msg, long when) {
   		......
    
   		final boolean needWake;
-  		synchronized (this) {
-  			......
-   
-  			msg.when = when;
-  			//Log.d("MessageQueue", "Enqueing: " + msg);
-  			Message p = mMessages;
-  			if (p == null || when == 0 || when < p.when) {
-                  //当前消息队列为空时，这时候应用程序的主线程一般就是处于空闲等待状态了，这时候就要唤醒它
-  				msg.next = p;
-  				mMessages = msg;
-  				needWake = mBlocked; // new head, might need to wake up
-  			} else {
-                  //应用程序的消息队列不为空，这时候就不需要唤醒应用程序的主线程了，因为这时候它一定是在忙着处于消息队列中的消息，因此不会处于空闲等待的状态。
-  				Message prev = null;
-  				while (p != null && p.when <= when) {
-  					prev = p;
-  					p = p.next;
-  				}
-  				msg.next = prev.next;
-  				prev.next = msg;
-  				needWake = false; // still waiting on head, no need to wake up
-  			}
-   
-  		}
-      //前面判定最后需不需要唤醒应用程序的主线程
-  		if (needWake) {
-              //唤醒，往管道写数据的逻辑很可能就在这里了
-  			nativeWake(mPtr);
-  		}
-  		return true;
-  }
+          if (p == null || when == 0 || when < p.when) {
+              //当前消息队列为空时，或者需要马上执行的消息或者延时时间短的消息，直接将消息插进队头，再唤醒主线程处理消息              
+                  msg.next = p;
+                  mMessages = msg;
+                  needWake = mBlocked;
+              } else {
+              //执行这里就表明应用程序的消息队列不为空时，且当前消息要执行时间慢于前面的消息时（） 则放入消息队列即可
+                  //插入到队列中间。通常我们不需要唤醒事件队列，除非队列的头部有一个屏障，并且消息是队列中最早的异步消息。
+                  needWake = mBlocked && p.target == null && msg.isAsynchronous();
+                  Message prev;
+                  for (;;) {
+                      prev = p;
+                      p = p.next;
+                      if (p == null || when < p.when) {
+                          break;
+                      }
+                      if (needWake && p.isAsynchronous()) {
+                          needWake = false;
+                      }
+                  }
+                  msg.next = p; // invariant: p == prev.next
+                  prev.next = msg;
+              }
+  
+              // We can assume mPtr != 0 because mQuitting is false.这里就是看有没有必要去唤醒线程处理消息了
+              if (needWake) {
+                  nativeWake(mPtr);
+              }
+      
+  }		
   ~~~
 
   ~~~java
