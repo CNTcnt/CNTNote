@@ -37,6 +37,7 @@
   
         ...
           }
+  ~~~
 ~~~
   
 * ~~~java
@@ -45,7 +46,7 @@
           mQuitAllowed = quitAllowed;
           mPtr = nativeInit();//这个也是native方法
    }
-  ~~~
+~~~
 
 * ~~~java
   //安卓4.2以上实现
@@ -264,7 +265,7 @@
                   needWake = mBlocked;
               } else {
               //执行这里就表明应用程序的消息队列不为空时，且当前消息要执行时间慢于前面的消息时（） 则放入消息队列即可
-                  //插入到队列中间。通常我们不需要唤醒事件队列，除非队列的头部有一个屏障，并且消息是队列中最早的异步消息。
+                  //插入到队列中间。通常我们不需要唤醒事件队列，除非队列的头部有一个同步屏障，并且消息是队列中最早的异步消息。
                   needWake = mBlocked && p.target == null && msg.isAsynchronous();
                   Message prev;
                   for (;;) {

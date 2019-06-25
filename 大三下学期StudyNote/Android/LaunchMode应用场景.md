@@ -39,7 +39,7 @@
 
 * **在启动模式为Standard下，单独使用TaskAffinity属性是无效的**。
 
-* allowTaskReparenting用来标记Activity能否从启动的Task移动到taskAffinity指定的Task，默认是继承至application中的allowTaskReparenting=false，如果为true，则表示可以更换；false表示不可以。
+* allowTaskReparenting(是否允许任务站重排根目录)用来标记Activity能否从启动的Task移动到taskAffinity指定的Task，默认是继承至application中的allowTaskReparenting=false，如果为true，则表示可以更换；false表示不可以。
 
 * taskAffinity 和singleTask 配合使用或者和 allowTaskReparenting 配合使用
 
