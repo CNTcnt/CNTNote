@@ -36,13 +36,13 @@
 
 ## 实现原理
 
-在 Android 和 IOS 上，默认情况下 **Flutter** 和 **React Native 都需要一个原生平台的Activity / ViewController 支持，且在原生层面属于一个“单页面应用”**，而它们之间最大的不同点其实在于 **UI 构建**:
+* 在 Android 和 IOS 上，默认情况下 **Flutter** 和 **React Native 都需要一个原生平台的Activity / ViewController 支持，且在原生层面属于一个“单页面应用”**，而它们之间最大的不同点其实在于 **UI 构建**:
 
 **React Native ：**
 
-React Native 是一套 UI 框架，默认情况下 React Native 会在 Activity 下加载 JS 文件，然后运行在 JavaScriptCore 中解析 Bundle 文件布局，最终堆叠出一系列的原生控件进行渲染。
+* React Native 是一套 UI 框架，默认情况下 React Native 会在 Activity 下加载 JS 文件，然后运行在 JavaScriptCore 中解析 Bundle 文件布局，最终堆叠出一系列的原生控件进行渲染。
 
-简单来说就是 **通过写 JS 代码配置页面布局，然后 React Native 最终会解析渲染成原生控件**，如 <View> 标签对应 ViewGroup/UIView ，<ScrollView> 标签对应 ScrollView/UIScrollView ，<Image> 标签对应 ImageView/UIImageView 等。
+* 简单来说就是 **通过写 JS 代码配置页面布局，然后 React Native 最终会解析渲染成原生控件**，如 <View> 标签对应 ViewGroup/UIView ，<ScrollView> 标签对应 ScrollView/UIScrollView ，<Image> 标签对应 ImageView/UIImageView 等。
 
 ![img](https://mmbiz.qpic.cn/mmbiz_png/MOu2ZNAwZwMeltiaqkGib9w9miboc8ezicDKZIiaCvzbP0icvXcxtPDuFvsHluwdlW8Fec7aEsXJAllkGN7sEywQA9Zg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
@@ -52,22 +52,23 @@ React Native 是一套 UI 框架，默认情况下 React Native 会在 Activity 
 
 **Flutter ：**
 
-**如果说 React Native 是为开发者做了平台兼容，那 Flutter 则更像是为开发者屏蔽平台的概念。**
+* **如果说 React Native 是为开发者做了平台兼容，那 Flutter 则更像是为开发者屏蔽平台的概念。**
 
 > Flutter 中只需平台提供一个 Surface 和一个 Canvas ，剩下的 Flutter说：“你可以躺下了，我们来自己动”。
 
-Flutter 中绝大部分的 Widget 都与平台无关， 开发者基于 Framework 开发 App ，而 Framework 运行在 Engine 之上，由 Engine 进行适配和跨平台支持。这个跨平台的支持过程，其实就是**将 Flutter UI 中的 Widget “数据化” ，然后通过 Engine 上的 Skia 直接绘制到屏幕上 ,**当需要更新UI的时候，Framework通知Engine，Engine会等到下个Vsync信号到达的时候，会通知 Framework，然后 Framework 会进行 animations, build，layout，compositing，paint，最后生成 layer 提交给 Engine。Engine会把 layer 进行组合，生成纹理，最后通过 Open Gl接口提交数据给GPU， GPU经过处理后在显示器上面显示。
+* Flutter 中绝大部分的 Widget 都与平台无关， 开发者基于 Framework 开发 App ，而 Framework 运行在 Engine 之上，由 Engine 进行适配和跨平台支持。这个跨平台的支持过程，其实就是**将 Flutter UI 中的 Widget “数据化” ，然后通过 Engine 上的 Skia 直接绘制到屏幕上 ,**当需要更新UI的时候，Framework通知Engine，Engine会等到下个Vsync信号到达的时候，会通知 Framework，然后 Framework 会进行 animations, build，layout，compositing，paint，最后生成 layer 提交给 Engine。Engine会把 layer 进行组合，生成纹理，最后通过 Open Gl接口提交数据给GPU， GPU经过处理后在显示器上面显示。在Flutter界面渲染过程分为三个阶段：布局、绘制、合成；布局和绘制在Flutter框架中完成，合成则交由引擎负责。
+* ![](https://img-blog.csdn.net/2018102310541525?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzM4MzY2Nzc3/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70)
 
-![img](https://mmbiz.qpic.cn/mmbiz_png/MOu2ZNAwZwMeltiaqkGib9w9miboc8ezicDKBEV2GhZPm07KicE6mTz72Zz05Q3wmYThQXTQWbVGwqiceD8R16Aicaotw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
+* ![img](https://mmbiz.qpic.cn/mmbiz_png/MOu2ZNAwZwMeltiaqkGib9w9miboc8ezicDKBEV2GhZPm07KicE6mTz72Zz05Q3wmYThQXTQWbVGwqiceD8R16Aicaotw/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1)
 
-所以从以上可以看出：**React Native 的 Learn once, write anywhere 的思路，就是只要你会 React ，那么你可以用写 React 的方式，再去开发一个性能不错的App；而 Flutter 则是让你忘掉平台，专注于 Flutter UI 就好了。**
+* 所以从以上可以看出：**React Native 的 Learn once, write anywhere 的思路，就是只要你会 React ，那么你可以用写 React 的方式，再去开发一个性能不错的App；而 Flutter 则是让你忘掉平台，专注于 Flutter UI 就好了。**
 
 **DOM：**
 
 额外补充一点，React 的虚拟 DOM 的概念相信大家都知道，这是 React 的性能保证之一，而 Flutter 其实也存在类似的虚拟  DOM 概念。为什么要提出虚拟ＤＯＭ的概念？
 
 * React 的 虚拟DOM：React实现了一个Virtual DOM，组件的真实DOM结构和Virtual DOM之间有一个映射的关系，React在虚拟DOM上实现了一个diff算法，当render()去重新渲染组件的时候，diff会找到需要变更的DOM，然后再把修改更新到浏览器上面的真实DOM上，所以，React并不是渲染了整个DOM树，Virtual DOM就是JS数据结构，所以比原生的DOM快得多。
-* 原生的DOM不是慢，DOM全称文档对象模型，本质也是一个JS对象，所以操作DOM对象其实也是很快的，慢就慢在操作了DOM对象之后，浏览器之后所做出的行为，比如布局layout、绘制paint。比如原生代码中，我们需要操作10个DOM，我们的理想状态是一次性构建出全部的DOM树，然后渲染，但是实际上，浏览器收到第一个DOM操作请求之后，它并不知道你后面还有9个操作，它就会走一遍完整的渲染流程，显然像计算元素坐标这些操作都是白白浪费的，因为下一次DOM操作可能会改变这些坐标，前面的计算就白费了。而优化原生的DOM操作，其实是去试图减少`layout`的次数，中心思想都是一样的，我们在一个不在`Render Tree`的元素统一操作，操作完之后，再把这个节点加入到`Render Tree`上，这样的效果就是无论多么复杂的DOM操作，最终都只会进行一次`layout`。
+* 原生的DOM不是慢，DOM全称文档对象模型，本质也是一个JS对象，所以操作DOM对象其实也是很快的，慢就慢在操作了DOM对象之后，浏览器之后所做出的行为，比如布局layout、绘制paint。比如原生代码中，我们需要操作10个DOM，我们的理想状态是一次性构建出全部的DOM树，然后渲染，但是实际上，浏览器收到第一个DOM操作请求之后，它并不知道你后面还有9个操作，它就会走一遍完整的渲染流程，显然像计算元素坐标这些操作都是白白浪费的，因为下一次DOM操作可能会改变这些坐标，前面的计算就白费了。而优化原生的DOM操作，其实是去试图减少`layout`的次数，中心思想都是一样的，我们在一个不在`Render Tree(渲染树)`的元素统一操作，操作完之后，再把这个节点加入到`Render Tree`上，这样的效果就是无论多么复杂的DOM操作，最终都只会进行一次`layout`。
 * 回到正题：为什么要使用虚拟DOM？**`virtual dom`比原生dom快，就它的`batching` 和和独特的 `diff`算法，`batching`就是把所有的DOM操作搜集起来，一次性提交给真实DOM，`diff`算法通过对比新旧虚拟DOM树，记录之间的差异。**
 * 而在Flutter 中，我们写的 Widget ， 其实并非真正的渲染控件，这一点和 React Native 中的标签类似，Widget 更像配置文件， 由它组成的 Widget 树并非真正的渲染树。
 
@@ -75,7 +76,7 @@ Flutter 中绝大部分的 Widget 都与平台无关， 开发者基于 Framewor
 
 ### 小结
 
-**所以在实现原理上 React Native 和 Flutter 是完全不同的思路，虽然都有类似“虚拟 DOM 的概念” ，但是React Native 带有较强的平台关联性，而 Flutter UI 的平台关联性十分薄弱。**
+* **所以在实现原理上 React Native 和 Flutter 是完全不同的思路，虽然都有类似“虚拟 DOM 的概念” ，但是React Native 带有较强的平台关联性，而 Flutter UI 的平台关联性十分薄弱。**
 
 ---
 
@@ -85,6 +86,14 @@ Flutter 中绝大部分的 Widget 都与平台无关， 开发者基于 Framewor
 
 *  **JS 是动态语言，而 Dart 是伪动态语言的强类型语言。**
 * **动态语言和非动态语言都有各种的优缺点，比如 JS 开发便捷度明显会高于 Dart ，而 Dart 在类型安全和重构代码等方面又会比 JS 更稳健。**
+* 额外补充一点，***JS* 和 *Dart* 都是单线程应用**，利用了协程的概念实现异步效果，而在 **Flutter** 中 *Dart* 支持的 `isolate` ，却是属于完完全全的异步线程处理，可以通过 Port 快捷地进行异步交互，这大大拓展了 **Flutter** 在 *Dart* 层面的性能优势。
+* 协程：协程，又称微线程，纤程。英文名Coroutine。
+* 协程和子程序的区别：子程序或者称为函数，在所有语言中都是层级调用，比如A调用B，B在执行过程中又调用了C，C执行完毕返回，B执行完毕返回，最后是A执行完毕。所以子程序调用是通过栈实现的，一个线程就是执行一个子程序。子程序调用总是一个入口，一次返回，调用顺序是明确的。而协程的调用和子程序不同。协程看上去也是子程序，但执行过程中，在子程序内部可中断，然后转而执行别的子程序，在适当的时候再返回来接着执行。
+* 即协程在执行到一半的时候可以中断执行，然后CPU执行别的子程序，这里不是协程的方法内部调用，而是中断当前程序，然后转而执行别的子程序，在适当的时候再返回来接着就刚才的中断的位置继续执行。
+*  看起来A、B的执行有点像多线程，但协程的特点在于是一个线程执行，那和多线程比，协程有何优势？
+   * 最大的优势就是协程极高的执行效率。因为子程序切换不是线程切换，而是由程序自身控制，因此，没有线程切换的开销，和多线程比，线程数量越多，协程的性能优势就越明显。
+   * 第二大优势就是不需要多线程的锁机制，因为只有一个线程，也不存在同时写变量冲突，在协程中控制共享资源不加锁，只需要判断状态就好了，所以执行效率比多线程高很多。
+   * 因为协程是一个线程执行，那怎么利用多核CPU呢？最简单的方法是多进程+协程，既充分利用多核，又充分发挥协程的高效率，可获得极高的性能。
 
 ### 界面开发
 
